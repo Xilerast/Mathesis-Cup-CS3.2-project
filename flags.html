@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Βρες τους γείτονες</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <script src="countries.js">
+    </script>
+    <script src="solution.js">
+    </script>
+</head>
+
+<body>
+    <div class="game-panel">
+        <!-- 
+            Γράψτε εδώ τον κώδικα HTML που χρειάζεστε για το παιχνίδι.
+            Κάποια από τα στοιχεία (elements) της σελίδας προστίθενται και
+            αφαιρούνται δυναμικά, μέσα από τη JavaScript, π.χ. οι σημαίες 
+            των γειτονικών χωρών κ.ά.
+        -->
+        <div id="sidebar">
+            <h2>Βρες τους γείτονες</h2>
+            <div id="stats">
+                <table>
+                    <tr>
+                        <td>Γύρος: </td>
+                        <td id="round">0</td>
+                    </tr>
+                    <tr>
+                        <td>Σκορ: </td>
+                        <td id="score">0</td>
+                    </tr>
+                </table>
+            </div>
+            <button id="btn-next-round" disabled>Επόμενη Χώρα</button>
+            <button id="btn-new-game">Νέο παιχνίδι</button>
+        </div>
+        <div id="game-ui">
+            <div id="my-country">
+                <div id="my-country-flag"></div>
+                <div id="my-country-name">
+                    <h2>Uninitialized</h2>
+                </div>
+            </div>
+            <progress id="progress" value="0" max="100">0%</progress>
+            <div id="next-round-panel">
+                <div id="results-message"><h2>Uninitialized</h2></div>
+                <div id="neighbours-panel">Uninitialized</div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    //Το παρακάτω αφορά μόνο τους χρήστες macOS.
+    if (navigator.appVersion.indexOf("Macintosh") > 0) {
+        document.body.style.fontFamily = '"Open Sans"';
+    }
+</script>
+
+</html>

@@ -1,0 +1,178 @@
+/*
+Ενδεικτικοί επιλογείς για τη διαμόρφωση του στυλ
+
+Μπορείτε να προσθέσετε τις δηλώσεις στους παρακάτω κανόνες και να εμπλουτίσετε με δικούς σας κανόνες.
+*/
+
+
+/* Χρειάζεται για να φανούν οι σημαίες στους φυλλομετρητές chrome-based από Windows 10 */
+
+@font-face {
+    font-family: 'TwemojiMozilla';
+    src: url('TwemojiMozilla.ttf');
+}
+
+body {
+    margin: 40px;
+    font-family: 'Open Sans', 'TwemojiMozilla';
+    /* Η γραμματοσειρά open sans φορτώνεται στο αρχείο html*/
+    background-color: #fff;
+    color: #444;
+}
+
+.game-panel {
+    display: grid;
+    justify-items: start;
+    justify-content: space-evenly;
+    align-items: center;
+    grid-template-columns: 1.0fr 0.1fr 8.5fr;
+}
+
+@media (max-width: 800px) {
+    /* ενδεικτικά */
+    /*  ... */
+}
+
+#game-ui {
+    width: 100%;
+    display: grid;
+    align-self: start;
+    grid-column-start: 3;
+    grid-row-start: 1;
+}
+
+#my-country {
+    width: 100%;
+    background-color: gray;
+    color: white;
+    border-radius: 5px;
+    margin-bottom: 1%;
+    display: inline-flex;
+    flex-direction: row;
+}
+
+#sidebar {
+    height: 100%;
+    width: 100%;
+    background-color: #FF00FF;
+    color: #FFF;
+    font-size: large;
+    text-align: center;
+    border-radius: 5px;
+    display: grid;
+    grid-row-start: 1;
+    align-content: space-around;
+    align-self: baseline;
+}
+
+#stats {
+    width: 80%;
+}
+
+#stats table {
+    width: 100%;
+}
+
+#stats td:nth-child(2) {
+    text-align: right;
+}
+
+#neighbours-panel {
+    margin-top: 1%;
+    display: grid;
+    align-content: space-between;
+    grid-template-columns: 2fr 2fr 2fr 2fr 2fr;
+    visibility: visible;
+}
+
+.neighbour {
+    place-self: center;
+    text-align: center;
+    display: grid;
+    margin: 5%;
+    width: 95%;
+}
+
+.neighbour .flag {
+    text-shadow: 0px 0px 5px black;
+    font-size: 80px;
+}
+
+.neighbour .country-name {
+    font-weight: bold;
+}
+
+.was-clicked.neighbour-is-valid {
+    border-radius: 5px;
+    border-color: green;
+    border-style: solid;
+}
+
+.was-clicked.neighbour-is-invalid {
+    border-radius: 5px;
+    border-color: red;
+    border-style: solid;
+}
+
+.neighbour:not(.was-clicked) {
+    border-style: hidden;
+}
+
+#my-country-flag {
+    text-shadow: 0px 0px 5px ivory;
+    font-size: 60px;
+    margin: 0 20px;
+}
+
+#my-country-name {
+    text-shadow: 0px 0px 5px black;
+}
+
+#next-round-panel {
+    visibility: hidden;
+    position: relative;
+    /* display: flex; */
+    background-color: rgba(128, 128, 128, 0.5);
+    border-radius: 5px;
+    margin-top: 1%;
+}
+
+#results-message {
+    visibility: hidden;
+    z-index: 1;
+    /* color: brown; */
+    /* THIS FEELS VERY HACKY, FEEDBACK ON AN ALTERNATE METHOD WOULD BE GREATLY APPRECIATED */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* ------------------------------------------- */
+}
+
+#progress {
+    width: 100%;
+    border-radius: 5px;
+}
+
+#btn-new-game {
+    border-radius: 5px;
+    width: 80%;
+    padding: 7% 0%;
+    justify-self: center;
+}
+
+#btn-next-round {
+    border-radius: 5px;
+    width: 80%;
+    padding: 7% 0%;
+    justify-self: center;
+}
+
+/* ειδικά για τους φυλλομετρητές που προέρχονται από τον chrome καθώς 
+υποστηρίζουν λιγότερο καλά το στοιχείο progress από ότι ο firefox,
+όσον αφορά το CSS (που και σε αυτόν έχει προβληματική υποστήριξη)
+*/
+
+#progress::-webkit-progress-bar {
+    border-radius: 5px;
+}
