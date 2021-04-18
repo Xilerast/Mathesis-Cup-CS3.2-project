@@ -10,6 +10,9 @@ const allCountries = new Array();
 var score = 0;
 var round = 1;
 
+// Shuffles given array, takes the first slot, and uses AJAX requests to get 
+// the neighboring countries. Then creates a new array and adds the country
+// and its neighboring countries to it and returns the new array.
 function requests(countriesArr) {
     var countriesArr = shuffleArray(countriesArr);
 
@@ -41,6 +44,7 @@ function requests(countriesArr) {
     return countryAndBorders;
 }
 
+// Updates the HTML page with the countries given by the array passed as an argument
 function editInnerHTML(countriesArr) {
     document.getElementById("btn-next-round").disabled = true;
     document.getElementById("my-country-name").innerHTML = "<h2>" + countriesArr[0]["name"] + "</h2>";
@@ -93,6 +97,10 @@ document.addEventListener("DOMContentLoaded", () => {
     var mistakesAvail = countriesArray.length - 1;
     var correctsAvail = countriesArray.length - 1;
 
+    // The function that's used as an onClick Event Listener
+    // Updates the page depending on which country was clicked,
+    // and also decides whether or not the game should end, based on
+    // the number of countries clicked.
     var onClickEL = function () {
         if ((correctsAvail != 0) && (mistakesAvail != 0)) {
             this.classList.add("was-clicked");
