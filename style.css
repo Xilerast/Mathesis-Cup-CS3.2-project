@@ -106,12 +106,14 @@ body {
     border-radius: 5px;
     border-color: green;
     border-style: solid;
+    background-color: rgba(0, 128, 0, 0.05);
 }
 
 .was-clicked.neighbour-is-invalid {
     border-radius: 5px;
     border-color: red;
     border-style: solid;
+    background-color: rgba(255, 0, 0, 0.05);
 }
 
 .neighbour:not(.was-clicked) {
