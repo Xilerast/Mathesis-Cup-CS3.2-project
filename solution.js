@@ -7,190 +7,215 @@ const allCountries = new Array();
 // π.χ. Game, PlayingCountry, Neighbour, ...
 // ή να και ακολουθήσετε άλλη τακτική, που να σας είναι πιο προσιτή
 
-var score = 0;
 var round = 1;
+var score = 0;
+var fakeBordersCodes = new Array();
+var numberOfValidNeighbors = 0;
+var numberOfValidsFound = 0;
+var mistakesAvail = 0;
+const numOfRows = 4;
 
-// Shuffles given array, takes the first slot, and uses AJAX requests to get 
-// the neighboring countries. Then creates a new array and adds the country
-// and its neighboring countries to it and returns the new array.
-function requests(countriesArr) {
-    var countriesArr = shuffleArray(countriesArr);
+// Updates game progress
+function updateProgress(result) {
+    const nextRoundPanel = document.getElementById("next-round-panel");
 
-    var URL = "https://restcountries.eu/rest/v2/alpha/";
-    var xhttp = new XMLHttpRequest();
+    const resultElement = document.getElementById("result");
+    const scorePtsElem = document.getElementById("score-pts");
 
-    xhttp.open("GET", URL + countriesArr[0]["code3"], false);
-    xhttp.send();
-    var borders = JSON.parse(xhttp.responseText)["borders"];
-    while (borders.length == 0) {
-        countriesArr = shuffleArray(countriesArr);
-        xhttp.open("GET", URL + countriesArr[0]["code3"], false);
-        xhttp.send();
-        borders = JSON.parse(xhttp.responseText)["borders"];
+    if (result) {
+        numberOfValidsFound++;
+        score += 3;
+        scorePtsElem.innerText = score;
+        const progressBar = document.getElementById("progress");
+        progressBar.setAttribute("value", (numberOfValidsFound * 100) / numberOfValidNeighbors);
+
+        if (numberOfValidsFound === numberOfValidNeighbors) {
+            resultElement.setAttribute("class", "success-result");
+            resultElement.innerText = "Success!";
+            nextRoundPanel.appendChild(resultElement);
+            nextRoundPanel.style.display = "flex";
+            document.getElementById("next-round").disabled = false;
+        }
+    } else {
+        mistakesAvail--;
+        score -= 5;
+        scorePtsElem.innerText = score;
+
+        if (mistakesAvail === 0) {
+            resultElement.setAttribute("class", "failure-result");
+            resultElement.innerText = "Failure...";
+            nextRoundPanel.appendChild(resultElement);
+            nextRoundPanel.style.display = "flex";
+        }
+    }
+}
+
+// Checks if neighbor is valid.
+function checkNeighbor(event) {
+    let thisClassAttribute = this.getAttribute("class");
+    thisClassAttribute += " was-clicked";
+    const countryCodeSpan = this.lastChild;
+    if (fakeBordersCodes.includes(countryCodeSpan.innerText)) {
+        thisClassAttribute += " is-invalid";
+
+        updateProgress(false);
+    } else {
+        thisClassAttribute += " is-valid";
+
+        updateProgress(true);
     }
 
-    var countryAndBorders = new Array();
-    countryAndBorders.push(countriesArr[0]);
+    this.setAttribute("class", thisClassAttribute);
+    this.removeEventListener("click", checkNeighbor);
+}
 
-    for (var i = 0; i < borders.length; i++) {
-        for (var j = 0; j < countriesArr.length; j++) {
-            if (countriesArr[j]["code3"] == borders[i]) {
-                countryAndBorders.push(countriesArr[j]);
-                break;
+function countryRemove(countriesArray) {
+    for (let i = 0; i < countryObjects.length; i++) {
+        for (let j = 0; j < countriesArray.length; j++) {
+            if (countriesArray[j] === countryObjects[i].code3) {
+                countriesArray.splice(i, 1);
+            }
+        }
+    }
+}
+
+// Lookup countries and fill array
+function countryLookupArray(countriesArray) {
+    const resultArray = new Array();
+
+    for (let i = 0; i < countryObjects.length; i++) {
+        for (let j = 0; j < countriesArray.length; j++) {
+            if (countriesArray[j] === countryObjects[i].code3) {
+                resultArray.push(countryObjects[i]);
             }
         }
     }
 
-    return countryAndBorders;
+    return resultArray;
 }
 
 // Updates the HTML page with the countries given by the array passed as an argument
-function editInnerHTML(countriesArr) {
-    document.getElementById("btn-next-round").disabled = true;
-    document.getElementById("my-country-name").innerHTML = "<h2>" + countriesArr[0]["name"] + "</h2>";
-    document.getElementById("my-country-flag").innerHTML = country2emoji2(countriesArr[0]["code"]);
-    document.getElementById("round").innerHTML = round;
+function editInnerHTML(country, countriesArr) {
+    document.getElementById("next-round").disabled = true;
+    document.getElementById("my-country-name").innerHTML = "<h2>" + country["name"] + "</h2>";
+    document.getElementById("my-country-flag").innerHTML = country2emoji2(country["code"]);
+    document.getElementById("round-number").innerHTML = round;
+    document.getElementById("score-pts").innerHTML = score;
 
-    var fakeBorders = new Array();
+    let fakeBorders = new Array();
     const shuffledCountries = shuffleArray(countryObjects);
 
     for (var i = 0; i < shuffledCountries.length; i++) {
         for (var j = 0; j < countriesArr.length; j++) {
-            if (shuffledCountries[i] == countriesArr[j]) {
+            if (shuffledCountries[i] === countriesArr[j]) {
                 break;
             }
         }
-        if ((j == countriesArr.length) && (shuffledCountries[i] != countriesArr[j])) {
+        if ((j === countriesArr.length) && (shuffledCountries[i] !== countriesArr[j])) {
             fakeBorders.push(shuffledCountries[i]);
+            fakeBordersCodes.push(shuffledCountries[i].code);
         }
-        if (fakeBorders.length == (countriesArr.length - 1) * 2) {
+        if (fakeBorders.length === (countriesArr.length) * 2) {
             break;
         }
     }
 
-    var finalCountries = countriesArr.slice(1, countriesArr.length).concat(fakeBorders);
+    let finalCountries = countriesArr.slice(0, countriesArr.length).concat(fakeBorders);
 
     finalCountries = shuffleArray(finalCountries);
 
-    document.getElementById("neighbours-panel").innerHTML = "<div class=\"neighbour\">" +
-        "<div class=\"flag\">" + country2emoji2(finalCountries[0]["code"]) + "</div>" +
-        "<div class=\"country-name\">" + finalCountries[0]["name"] + "</div>" +
-        "<span style=\"display:none\">" + finalCountries[0]["code"] + "</span>" + "</div>";
-
-    for (var i = 1; i < finalCountries.length; i++) {
-        document.getElementById("neighbours-panel").innerHTML += "<div class=\"neighbour\">" +
+    const neighborsList = document.getElementById("neighbors-list");
+    let innerHTML = "";
+    for (i = 0; i < finalCountries.length; i++) {
+        if ((finalCountries.length - i) <= 4) {
+            break;
+        }
+        innerHTML += "<div class=\"neighbor\">" +
             "<div class=\"flag\">" + country2emoji2(finalCountries[i]["code"]) + "</div>" +
             "<div class=\"country-name\">" + finalCountries[i]["name"] + "</div>" +
             "<span style=\"display:none\">" + finalCountries[i]["code"] + "</span>" + "</div>";
     }
-}
 
-document.addEventListener("DOMContentLoaded", () => {
-    //start a new Game
-    //...
-    var countriesArray = requests(countryObjects);
+    neighborsList.innerHTML = innerHTML;
 
-    editInnerHTML(countriesArray);
-
-    var countryElements = document.getElementsByClassName("neighbour");
-
-    var mistakesAvail = countriesArray.length - 1;
-    var correctsAvail = countriesArray.length - 1;
-
-    // The function that's used as an onClick Event Listener
-    // Updates the page depending on which country was clicked,
-    // and also decides whether or not the game should end, based on
-    // the number of countries clicked.
-    var onClickEL = function () {
-        if ((correctsAvail != 0) && (mistakesAvail != 0)) {
-            this.classList.add("was-clicked");
-
-            for (var i = 0; i < countriesArray.length; i++) {
-                if ((this.getElementsByTagName("span")[0].innerHTML == countriesArray[i]["code"]) && (correctsAvail != 0) && (mistakesAvail != 0)) {
-                    this.classList.add("neighbour-is-valid");
-                    score += 5;
-                    document.getElementById("score").innerHTML = score;
-                    correctsAvail--;
-                    document.getElementById("progress").value += 100 / (countriesArray.length - 1);
-                    if (correctsAvail == 0) {
-                        document.getElementById("btn-next-round").disabled = false;
-                        document.getElementById("results-message").innerHTML = "<h2>Τους βρήκατε όλους!</h2>";
-                        document.getElementById("results-message").style.color = "black";
-                        document.getElementById("results-message").style.visibility = "visible";
-                        document.getElementById("next-round-panel").style.visibility = "visible";
-                        document.getElementById("neighbours-panel").style.opacity = "25%";
-                        document.getElementById("progress").value = 100;
-                    }
-                    return;
-                }
-            }
-
-            this.classList.add("neighbour-is-invalid");
-            score -= 3;
-            document.getElementById("score").innerHTML = score;
-            mistakesAvail--;
-            if (mistakesAvail == 0) {
-                document.getElementById("btn-next-round").disabled = false;
-                document.getElementById("results-message").innerHTML = "<h2>Κρίμα, χάσατε!</h2>";
-                document.getElementById("results-message").style.color = "brown";
-                document.getElementById("results-message").style.visibility = "visible";
-                document.getElementById("next-round-panel").style.visibility = "visible";
-                document.getElementById("neighbours-panel").style.opacity = "25%";
-            }
+    let rowRemainder = i % 4;
+    const lastNeighborRow = document.createElement("div");
+    if (i < finalCountries.length) {
+        for (var index = 0; (index < numOfRows - rowRemainder) && (i < finalCountries.length); index++) {
+            innerHTML += "<div class=\"neighbor\">" +
+                "<div class=\"flag\">" + country2emoji2(finalCountries[i]["code"]) + "</div>" +
+                "<div class=\"country-name\">" + finalCountries[i]["name"] + "</div>" +
+                "<span style=\"display:none\">" + finalCountries[i]["code"] + "</span>" + "</div>";
+                i++;
         }
 
-        return;
-    };
+        neighborsList.innerHTML = innerHTML;
 
-    for (var i = 0; i < countryElements.length; i++) {
-        countryElements[i].addEventListener("click", onClickEL);
+        lastNeighborRow.setAttribute("id", "last-neighbor-row");
+        innerHTML = "";
+        if (finalCountries.length - i === 4) {
+            lastNeighborRow.style.display = "grid";
+            lastNeighborRow.style.gridTemplateColumns = "repeat(4, 1fr)";
+        }
+
+        for (; i < finalCountries.length; i++) {
+            innerHTML += "<div class=\"neighbor\">" +
+                "<div class=\"flag\">" + country2emoji2(finalCountries[i]["code"]) + "</div>" +
+                "<div class=\"country-name\">" + finalCountries[i]["name"] + "</div>" +
+                "<span style=\"display:none\">" + finalCountries[i]["code"] + "</span>" + "</div>";
+        }
+
+        innerHTML += "</div>";
     }
 
+    lastNeighborRow.innerHTML += innerHTML;
+    document.getElementById("neighbors-panel").appendChild(lastNeighborRow);
+}
+
+async function loadRound() {
+    const shuffledCountries = shuffleArray(countryObjects.slice());
+    for (var i = 0; i < shuffledCountries.length; i++) {
+        var country = shuffledCountries[i];
+        shuffledCountries.splice(i, 1);
+        var response = await fetch("https://restcountries.com/v2/alpha/" + country["code"]);
+        responseJSON = await response.json();
+        if (responseJSON["borders"]) break;
+    }
+
+    const countries = countryLookupArray(responseJSON["borders"]);
+    numberOfValidNeighbors = countries.length;
+    editInnerHTML(country, countries);
+
+    const neighborClasses = document.getElementsByClassName("neighbor");
+    for (i = 0; i < neighborClasses.length; i++) {
+        neighborClasses[i].addEventListener("click", checkNeighbor);
+    };
+
+    mistakesAvail = numberOfValidNeighbors;
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+    //start a new Game
+    loadRound();
+
     //event listener to new game button
-    document.querySelector("#btn-new-game").addEventListener("click", () => {
-        // ...
-        score = 0;
+    document.querySelector("#new-game").addEventListener("click", () => {
         round = 1;
-        document.getElementById("round").innerHTML = round;
-        document.getElementById("score").innerHTML = score;
-        document.getElementById("progress").value = 0;
-        document.getElementById("results-message").style.visibility = "hidden";
-        document.getElementById("next-round-panel").style.visibility = "hidden";
-        document.getElementById("neighbours-panel").style.opacity = "100%";
-
-        countriesArray = requests(countryObjects);
-
-        editInnerHTML(countriesArray);
-
-        mistakesAvail = countriesArray.length - 1;
-        correctsAvail = countriesArray.length - 1;
-
-        for (var i = 0; i < countryElements.length; i++) {
-            countryElements[i].addEventListener("click", onClickEL);
-        }
+        score = 0;
+        loadRound();
+        document.getElementById("next-round-panel").style.display = "none";
+        document.getElementById("progress").setAttribute("value", 0);
+        document.getElementById("last-neighbor-row").remove();
     })
 
     //event listener to next round button
-    document.querySelector("#btn-next-round").addEventListener("click", () => {
+    document.querySelector("#next-round").addEventListener("click", () => {
         round++;
-        document.getElementById("round").innerHTML = round;
-
-        document.getElementById("progress").value = 0;
-
-        document.getElementById("results-message").style.visibility = "hidden";
-        document.getElementById("next-round-panel").style.visibility = "hidden";
-        document.getElementById("neighbours-panel").style.opacity = "100%";
-
-        countriesArray = requests(countryObjects);
-
-        editInnerHTML(countriesArray);
-
-        mistakesAvail = countriesArray.length - 1;
-        correctsAvail = countriesArray.length - 1;
-
-        for (var i = 0; i < countryElements.length; i++) {
-            countryElements[i].addEventListener("click", onClickEL);
-        }
+        loadRound();
+        document.getElementById("round-number").innerText = round;
+        document.getElementById("next-round-panel").style.display = "none";
+        document.getElementById("progress").setAttribute("value", 0);
+        document.getElementById("last-neighbor-row").remove();
     })
 
 });

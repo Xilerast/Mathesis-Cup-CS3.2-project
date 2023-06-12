@@ -21,154 +21,136 @@ body {
 }
 
 .game-panel {
-    display: grid;
-    justify-items: start;
-    justify-content: space-evenly;
-    align-items: center;
-    grid-template-columns: 1.0fr 0.1fr 8.5fr;
-}
-
-@media (max-width: 800px) {
-    /* ενδεικτικά */
-    /*  ... */
-}
-
-#game-ui {
     width: 100%;
     display: grid;
-    align-self: start;
-    grid-column-start: 3;
-    grid-row-start: 1;
+    grid-template-rows: 100% 100% 100%;
 }
 
 #my-country {
-    width: 100%;
     background-color: gray;
-    color: white;
+    padding: 10px;
     border-radius: 5px;
-    margin-bottom: 1%;
-    display: inline-flex;
-    flex-direction: row;
+    margin-top: 10px;
+    color: white;
+    padding: 15px 30px;
 }
 
 #sidebar {
-    height: 100%;
-    width: 100%;
-    background-color: #FF00FF;
-    color: #FFF;
-    font-size: large;
-    text-align: center;
+    background-color: palevioletred;
+    color: white;
     border-radius: 5px;
+    padding: 15px;
+}
+
+#sidebar-btns {
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+    margin-top: 10px;
+}
+
+#sidebar-btns > button {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+#round {
+    font-size: large;
     display: grid;
-    grid-row-start: 1;
-    align-content: space-around;
-    align-self: baseline;
+    grid-template-columns: auto auto;
 }
 
-#stats {
-    width: 80%;
-}
-
-#stats table {
-    width: 100%;
-}
-
-#stats td:nth-child(2) {
+#round-number, #score-pts {
     text-align: right;
 }
 
-#neighbours-panel {
-    margin-top: 1%;
+#score {
+    font-size: large;
     display: grid;
-    align-content: space-between;
-    grid-template-columns: 2fr 2fr 2fr 2fr 2fr;
-    visibility: visible;
+    grid-template-columns: auto auto;
 }
 
-.neighbour {
-    place-self: center;
+#neighbors-panel {
+    position: relative;
+}
+
+#neighbors-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.neighbor {
+    border-radius: 5px;
     text-align: center;
-    display: grid;
-    margin: 5%;
-    width: 95%;
+    border: 3px solid blueviolet;
+    background-color: rgba(138, 46, 226, 0.2);
+    padding: 20px;
+    flex-grow: 1;
+    font-size: x-large;
 }
 
-.neighbour .flag {
-    text-shadow: 0px 0px 5px black;
-    font-size: 80px;
+.neighbor:hover {
+    background-color: rgba(138, 46, 226, 0.4);
+    transition: background-color .3s ease;
 }
 
-.neighbour .country-name {
-    font-weight: bold;
+#last-neighbor-row {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 10px;
+    gap: 10px;
 }
 
-.was-clicked.neighbour-is-valid {
-    border-radius: 5px;
-    border-color: green;
-    border-style: solid;
-    background-color: rgba(0, 128, 0, 0.05);
+.was-clicked.is-valid {
+    border: 3px solid green;
+    background-color: rgba(0, 128, 0, 0.2);
 }
 
-.was-clicked.neighbour-is-invalid {
-    border-radius: 5px;
-    border-color: red;
-    border-style: solid;
-    background-color: rgba(255, 0, 0, 0.05);
-}
-
-.neighbour:not(.was-clicked) {
-    border-style: hidden;
+.was-clicked.is-invalid {
+    border: 3px solid red;
+    background-color: rgba(128, 0, 0, 0.2);
 }
 
 #my-country-flag {
-    text-shadow: 0px 0px 5px ivory;
-    font-size: 60px;
-    margin: 0 20px;
+    font-size: 54px;
+    text-shadow: 0 0 5px #fff;
 }
 
 #my-country-name {
-    text-shadow: 0px 0px 5px black;
+    text-shadow: 0 0 2px black;
 }
 
 #next-round-panel {
-    visibility: hidden;
-    position: relative;
-    /* display: flex; */
-    background-color: rgba(128, 128, 128, 0.5);
-    border-radius: 5px;
-    margin-top: 1%;
-}
-
-#results-message {
-    visibility: hidden;
-    z-index: 1;
-    /* color: brown; */
-    /* THIS FEELS VERY HACKY, FEEDBACK ON AN ALTERNATE METHOD WOULD BE GREATLY APPRECIATED */
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    /* ------------------------------------------- */
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(11, 11, 11, 0.8);
+    border-radius: 5px;
+    display: none;
+    align-items: center;
+    justify-content: center;
 }
 
 #progress {
+    border-radius: 5px;
     width: 100%;
-    border-radius: 5px;
+    height: 25px;
+    margin: 10px 0;
 }
 
-#btn-new-game {
-    border-radius: 5px;
-    width: 80%;
-    padding: 7% 0%;
-    justify-self: center;
+.success-result {
+    color: green;
+    font-size: xx-large;
 }
 
-#btn-next-round {
-    border-radius: 5px;
-    width: 80%;
-    padding: 7% 0%;
-    justify-self: center;
+.failure-result {
+    color: brown;
+    font-size: xx-large;
 }
+
 
 /* ειδικά για τους φυλλομετρητές που προέρχονται από τον chrome καθώς 
 υποστηρίζουν λιγότερο καλά το στοιχείο progress από ότι ο firefox,
@@ -177,4 +159,41 @@ body {
 
 #progress::-webkit-progress-bar {
     border-radius: 5px;
+}
+
+@media (min-width: 768px) {
+    .game-panel {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 20% 80%;
+        gap: 10px;
+    }
+
+    #my-country {
+        margin-top: 0;
+    }
+
+    #sidebar {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #sidebar > h2 {
+        align-self: center;
+        justify-self: center;
+    }
+
+    #round {
+        width: 100%;
+    }
+
+    #score {
+        width: 100%;
+    }
+
+    #sidebar-btns {
+        width: 100%;
+        align-self: flex-end;
+        margin-top: auto;
+    }
 }

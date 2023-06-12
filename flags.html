@@ -5,14 +5,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Βρες τους γείτονες</title>
+    <title>Find the neighboring countries</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
-    <script src="countries.js">
-    </script>
-    <script src="solution.js">
-    </script>
+    <script src="countries.js"></script>
+    <script src="solution.js"></script>
 </head>
 
 <body>
@@ -24,42 +22,47 @@
             των γειτονικών χωρών κ.ά.
         -->
         <div id="sidebar">
-            <h2>Βρες τους γείτονες</h2>
-            <div id="stats">
-                <table>
-                    <tr>
-                        <td>Γύρος: </td>
-                        <td id="round">0</td>
-                    </tr>
-                    <tr>
-                        <td>Σκορ: </td>
-                        <td id="score">0</td>
-                    </tr>
-                </table>
+            <h2>
+                Find the neighboring countries
+            </h2>
+            <div id="round">
+                <span id="round-text">Round:</span>
+                <span id="round-number"></span>
             </div>
-            <button id="btn-next-round" disabled>Επόμενη Χώρα</button>
-            <button id="btn-new-game">Νέο παιχνίδι</button>
+            <div id="score">
+                <span id="score-text">Score: </span>
+                <span id="score-pts">0</span>
+            </div>
+            <div id="sidebar-btns">
+                <button id="next-round">Next round</button>
+                <button id="new-game">New game</button>
+            </div>
         </div>
-        <div id="game-ui">
+        <div id="right-sidebar">
             <div id="my-country">
-                <div id="my-country-flag"></div>
+                <div id="my-country-flag">
+        
+                </div>
                 <div id="my-country-name">
-                    <h2>Uninitialized</h2>
+        
                 </div>
             </div>
-            <progress id="progress" value="0" max="100">0%</progress>
-            <div id="next-round-panel">
-                <div id="results-message"><h2>Uninitialized</h2></div>
-                <div id="neighbours-panel">Uninitialized</div>
+            <div><progress id="progress" value="0" max="100"></progress></div>
+            <div id="neighbors-panel">
+                <div id="next-round-panel">
+                    <span id="result"></span>
+                </div>
+                <div id="neighbors-list">
+        
+                </div>
             </div>
         </div>
     </div>
 </body>
 <script>
-    //Το παρακάτω αφορά μόνο τους χρήστες macOS.
-    if (navigator.appVersion.indexOf("Macintosh") > 0) {
-        document.body.style.fontFamily = '"Open Sans"';
-    }
+//Το παρακάτω αφορά μόνο τους χρήστες macOS.
+if (navigator.appVersion.indexOf("Macintosh")>0){
+  document.body.style.fontFamily = '"Open Sans"';
+}
 </script>
-
 </html>
